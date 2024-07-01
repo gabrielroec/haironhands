@@ -11,6 +11,7 @@
   "description": "",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.606.0",
+    "@turf/turf": "^7.0.0",
     "aws-sdk": "^2.1651.0",
     "busboy": "0.3.1",
     "busboy-body-parser": "^0.3.2",
@@ -21,6 +22,7 @@
     "express-validator": "^7.1.0",
     "mongobd": "^0.0.1-security.0",
     "mongoose": "^8.4.4",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "turf": "^3.0.14"
   }
 }

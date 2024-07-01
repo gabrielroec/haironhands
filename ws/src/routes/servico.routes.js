@@ -120,4 +120,62 @@ router.put("/:id", async (req, res) => {
   req.pipe(busboy);
 });
 
+router.post("/remove-arquivo", async (req, res) => {
+  try {
+    console.log(req.body); // Log para verificar o corpo da requisição
+    const { id } = req.body;
+
+    if (!id || typeof id !== "string") {
+      throw new Error("ID do arquivo não fornecido ou não é uma string");
+    }
+
+    // EXCLUIR DA AWS
+    await aws.deleteFileS3(id);
+
+    // EXCLUIR DO BANCO DE DADOS
+    await Arquivos.findOneAndDelete({
+      arquivo: id, // Usando o campo correto para buscar o documento
+    });
+
+    res.json({ error: false, message: "Arquivo excluído com sucesso!" });
+  } catch (err) {
+    console.error("Erro ao excluir arquivo:", err);
+    res.json({ error: true, message: err.message });
+  }
+});
+
+router.get("/salao/:salaoId", async (req, res) => {
+  try {
+    let servicosSalao = [];
+    const servicos = await Servico.find({
+      salaoId: req.params.salaoId,
+      status: { $ne: "E" },
+    });
+
+    for (let servico of servicos) {
+      const arquivos = await Arquivos.find({
+        model: "Servico",
+        referenciaId: servico._id,
+      });
+      servicosSalao.push({ ...servico._doc, arquivos });
+    }
+
+    res.json({
+      error: false,
+      servicos: servicosSalao,
+    });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await Servico.findByIdAndUpdate(req.params.id, { status: "E" });
+    res.json({ error: false });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
 module.exports = router;

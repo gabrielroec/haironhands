@@ -1,22 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const Salao = require("../models/salao");
+const turf = require("@turf/turf");
 const Servico = require("../models/servico");
 
 // Validation middleware function
 router.post("/", async (req, res) => {
-  const { nome, email, senha, endereco } = req.body;
-
-  if (!nome || !email || !senha || !endereco) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Missing required fields" });
-  }
   try {
     const salao = await new Salao(req.body).save();
     res.json({ salao });
   } catch (err) {
-    res.status(500).json({ error: true, message: err.message });
+    res.json({ error: true, message: err.message });
   }
 });
 
@@ -25,13 +19,34 @@ router.get("/servicos/:salaoId", async (req, res) => {
     const { salaoId } = req.params;
     const servicos = await Servico.find({
       salaoId,
-      staus: "A",
+      status: "A",
     }).select("_id titulo");
 
     res.json({
+      error: false,
       servicos: servicos.map((s) => ({ label: s.titulo, value: s._id })),
     });
-  } catch (error) {}
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
+// POST route for fetching salao details by ID
+router.post("/filter/:id", async (req, res) => {
+  try {
+    const salao = await Salao.findById(req.params.id).select(req.body.fields);
+    const userCoordinates = req.body.coordinates; // Acessa diretamente as coordenadas
+    const distance = turf
+      .distance(turf.point(salao.geo.coordinates), turf.point(userCoordinates))
+      .toFixed(2);
+
+    res.json({
+      error: false,
+      salao: { ...salao._doc, distance, userCoordinates },
+    });
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
 });
 
 module.exports = router;
