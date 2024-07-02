@@ -23,3 +23,4 @@ app.listen(app.get("port"), () => {
 
 app.use("/salao", require("./src/routes/salao.routes"));
 app.use("/servico", require("./src/routes/servico.routes"));
+app.use("/horario", require("./src/routes/horario.routes"));

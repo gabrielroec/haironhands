@@ -4,7 +4,6 @@ const Salao = require("../models/salao");
 const turf = require("@turf/turf");
 const Servico = require("../models/servico");
 
-// Validation middleware function
 router.post("/", async (req, res) => {
   try {
     const salao = await new Salao(req.body).save();
@@ -31,11 +30,10 @@ router.get("/servicos/:salaoId", async (req, res) => {
   }
 });
 
-// POST route for fetching salao details by ID
 router.post("/filter/:id", async (req, res) => {
   try {
     const salao = await Salao.findById(req.params.id).select(req.body.fields);
-    const userCoordinates = req.body.coordinates; // Acessa diretamente as coordenadas
+    const userCoordinates = req.body.coordinates;
     const distance = turf
       .distance(turf.point(salao.geo.coordinates), turf.point(userCoordinates))
       .toFixed(2);
