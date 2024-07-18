@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const colaborador = new Schema({
@@ -30,14 +30,14 @@ const colaborador = new Schema({
   },
   sexo: {
     type: String,
-    enum: ['M', 'F'],
+    enum: ["M", "F"],
     required: true,
   },
   status: {
     type: String,
-    enum: ['A', 'I'],
+    enum: ["A", "I"],
     required: true,
-    default: 'A',
+    default: "A",
   },
   contaBancaria: {
     titular: {
@@ -79,4 +79,4 @@ const colaborador = new Schema({
   },
 });
 
-module.exports = mongoose.model('Colaborador', colaborador);
+module.exports = mongoose.model("Colaborador", colaborador);

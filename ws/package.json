@@ -13,6 +13,7 @@
     "@aws-sdk/client-s3": "^3.606.0",
     "@turf/turf": "^7.0.0",
     "aws-sdk": "^2.1651.0",
+    "axios": "^1.7.2",
     "busboy": "0.3.1",
     "busboy-body-parser": "^0.3.2",
     "connect-busboy": "^1.0.0",
